@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "out",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "exclude": ["old_tests"]
+}
