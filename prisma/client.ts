@@ -56,7 +56,7 @@ export const client: PrismaClient = {
     let result: any = usersData.find(u => u.id === opts.id);
 
     if (opts.select && opts.select.posts) {
-      result["posts"] = postsData.find(p => p.user_id === result.id);
+      result["posts"] = postsData.filter(p => p.user_id === result.id);
     }
 
     return result;
