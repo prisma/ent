@@ -1,4 +1,4 @@
-import { UserBase } from "../generated";
+import { User as UserBase } from "../generated";
 
 export class User extends UserBase {
   fullName() {

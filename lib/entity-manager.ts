@@ -1,22 +1,25 @@
 import { IGQLType } from "prisma-datamodel";
 import { ICache } from "./cache/cache";
 import { SimpleCache } from "./cache/simple-cache";
-import { BaseEntity } from "./entity";
+import { BaseEntity, InternalBaseEntity } from "./entity";
 import { Repository } from "./repository";
-import { GetGen, Constructor } from "./type-helpers";
+import { GetGen } from "./type-helpers";
 import {
   Client as PrismaClient,
   ObjectType,
   GetRepositoryFromEntity,
-  GetRepositoryFromName
+  GetRepositoryFromName,
+  BaseEntities,
+  CustomEntities
 } from "./types";
 import { arrayToMap } from "./utils";
+import { codegen } from "./codegen";
 
-export class EntityManager<Client extends PrismaClient> {
-  public entitiesMap: Record<string, BaseEntity<string>>;
-  public customeEntitiesMap: Record<string, BaseEntity<string>>;
-  public entities: { modelName: string }[];
-  public customEntities: { modelName: string }[];
+export class EntityManager<Client extends any = any> {
+  public entitiesMap: Record<string, InternalBaseEntity<string>>;
+  public customeEntitiesMap: Record<string, InternalBaseEntity<string>>;
+  public baseEntities: BaseEntities;
+  public customEntities: CustomEntities;
 
   public cache: ICache;
   public client: Client;
@@ -25,10 +28,16 @@ export class EntityManager<Client extends PrismaClient> {
 
   constructor(input: {
     client: Client;
-    baseEntities: (Constructor<BaseEntity<string>> & { modelName: string })[];
-    customEntities?: (Constructor<BaseEntity<string>> & {
-      modelName: string;
-    })[];
+    entities: {
+      baseEntities: BaseEntities;
+      customEntities?: CustomEntities;
+    };
+    typegen:
+      | false
+      | {
+          entitiesPath: string[];
+          clientPath: string;
+        };
     cache?: ICache;
   }) {
     /**
@@ -37,11 +46,24 @@ export class EntityManager<Client extends PrismaClient> {
     const typesMetadata = input.client.getDatamodel().types;
     this.modelNameToMetadata = arrayToMap(typesMetadata, t => t.name);
 
+    if (input.typegen) {
+      console.time("Generating types...");
+      codegen(
+        typesMetadata,
+        input.typegen.entitiesPath,
+        input.typegen.clientPath
+      );
+      console.timeEnd("Generating types...");
+    }
+
     this.cache = input.cache || new SimpleCache();
     this.client = input.client;
-    this.entities = input.baseEntities;
-    this.customEntities = input.customEntities || [];
-    this.entitiesMap = arrayToMap(input.baseEntities, e => e.modelName);
+    this.baseEntities = input.entities.baseEntities;
+    this.customEntities = input.entities.customEntities || [];
+    this.entitiesMap = arrayToMap(
+      input.entities.baseEntities,
+      e => e.modelName
+    );
     this.customeEntitiesMap = arrayToMap(this.customEntities, e => e.modelName);
     this.repositoriesCache = {};
   }
@@ -52,13 +74,13 @@ export class EntityManager<Client extends PrismaClient> {
   getRepository<Entity extends new (...args: any[]) => BaseEntity<string>>(
     entity: Entity
   ): GetRepositoryFromEntity<Entity>;
-  getRepository<Entity extends any>(entity: Entity): any {
+  getRepository<Entity extends any>(entity: Entity): Repository<any, Client> {
     const modelName =
       typeof entity === "string" ? entity : (entity as any).modelName;
 
     if (
       typeof entity !== "string" &&
-      !this.entities.includes(entity as any) &&
+      !this.baseEntities.includes(entity as any) &&
       !this.customEntities.includes(entity as any)
     ) {
       throw new Error(

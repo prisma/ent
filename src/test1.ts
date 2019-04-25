@@ -1,13 +1,12 @@
-import { client, PrismaClient } from "../../prisma/client";
-import { EntityManager } from "../../lib";
-import { User } from "./entities/User";
+import { client, PrismaClient } from "../prisma/client";
+import { EntityManager } from "../lib";
 import { UserRepository } from "./repositories/User";
-import { baseEntities } from "../../2/src/generated";
+import { entities } from "./generated";
+import { join } from "path";
 
 async function findUsersWithPosts(manager: EntityManager<PrismaClient>) {
   const repository = manager.getCustomRepository(UserRepository);
   const users = await repository.findUsersWithPosts();
-
   const firstUser = users[0];
 
   console.time("lazy load posts");
@@ -47,10 +46,15 @@ async function load100UsersWithLazyPosts(manager: EntityManager<PrismaClient>) {
 async function main() {
   const manager = new EntityManager({
     client,
-    baseEntities: [...baseEntities, User]
+    entities,
+    typegen: {
+      clientPath: join(__dirname, "../prisma/client.ts"),
+      entitiesPath: [join(__dirname, "entities/*.entity.ts")]
+    }
   });
 
-  load100UsersWithLazyPosts(manager);
+  //await load100UsersWithLazyPosts(manager);
+  await findUsersWithPosts(manager);
 }
 
 main();

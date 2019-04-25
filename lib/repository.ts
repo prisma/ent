@@ -9,14 +9,7 @@ import {
   ObjectType
 } from "./types";
 
-export class BaseRepository {
-  static modelName: string;
-}
-
-export class Repository<
-  Entity extends BaseEntity<string>,
-  Client extends PrismaClient
-> {
+export class Repository<Entity extends BaseEntity<string>, Client extends any> {
   private modelNameToFindOne: Record<string, string>;
   private modelNameToFindMany: Record<string, string>;
 
@@ -28,16 +21,29 @@ export class Repository<
     this.modelNameToFindMany = this.generateModelNameToFindMany(metadata.name);
   }
 
-  async findOne(
+  public async findOne(
     opts: FindOneRepoOptions<GetModelName<Entity>>
   ): Promise<Entity> {
     return this.internalFindOne(opts, this.metadata.name);
   }
 
-  async findMany(
+  public async findMany(
     opts?: FindManyRepoOptions<GetModelName<Entity>>
   ): Promise<Entity[]> {
     return this.internalFindMany(opts || {}, this.metadata.name);
+  }
+
+  public transformToEntity(
+    result: Record<string, any>,
+    selectStatement?: Record<string, any>
+  ): Entity {
+    const entity = this.internalTransformToEntity(
+      result,
+      selectStatement,
+      this.metadata.name
+    );
+
+    return entity as any;
   }
 
   private async internalFindOne(
@@ -54,7 +60,11 @@ export class Repository<
     const result = await this.manager.client[
       this.modelNameToFindOne[modelName]
     ](opts);
-    const entity = this.transformToEntity(result, opts.select, modelName);
+    const entity = this.internalTransformToEntity(
+      result,
+      opts.select,
+      modelName
+    );
 
     this.manager.cache.write(cacheId, { data: entity });
 
@@ -77,7 +87,7 @@ export class Repository<
     ](opts);
 
     const entities = results.map((result: Record<string, any>) =>
-      this.transformToEntity(result, opts.select, modelName)
+      this.internalTransformToEntity(result, opts.select, modelName)
     );
 
     this.manager.cache.write(cacheId, { data: entities });
@@ -104,7 +114,7 @@ export class Repository<
     return this.internalFindOne({ id: parentId! }, relationType.name);
   }
 
-  private transformToEntity(
+  private internalTransformToEntity(
     result: Record<string, any>,
     selectStatement: Record<string, any> | undefined,
     modelName: string
@@ -115,8 +125,8 @@ export class Repository<
     const relations = metadata.fields.filter(f => typeof f.type !== "string");
 
     let entityConstructorValues = scalars.reduce<Record<string, any>>(
-      (acc, s) => {
-        acc[s.name] = result[s.name];
+      (acc, scalar) => {
+        acc[scalar.name] = result[scalar.name];
 
         return acc;
       },

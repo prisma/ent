@@ -2,12 +2,21 @@ type User {
   id: ID! @id
   firstName: String!
   lastName: String!
+  veryLongString: String!
+  shortString: String!
   posts: [Post]
 }
 
 type Post {
   id: ID! @id
   title: String!
+  body: String!
+  author: User!
+  comments: [Comment]
+}
+
+type Comment {
+  id: ID! @id
   body: String!
   author: User!
 }

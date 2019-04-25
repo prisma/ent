@@ -1,10 +1,10 @@
 export function groupBy<T, R>(
   array: T[],
-  propertyCallback: (item: T) => R
+  callbackfn: (item: T) => R
 ): { id: R; items: T[] }[] {
   return array.reduce(
     (groupedArray, value) => {
-      const key = propertyCallback(value);
+      const key = callbackfn(value);
       let grouped = groupedArray.find(i => i.id === key);
       if (!grouped) {
         grouped = { id: key, items: [] };
@@ -19,12 +19,19 @@ export function groupBy<T, R>(
 
 export function arrayToMap<T>(
   array: T[],
-  propertyCallback: (item: T) => string | number
+  callbackfn: (item: T) => string | number
 ): Record<string | number, T> {
   return array.reduce<Record<string | number, T>>((acc, item) => {
-    const id = propertyCallback(item);
+    const id = callbackfn(item);
 
     acc[id] = item;
     return acc;
   }, {});
+}
+
+export function flatMap<T, U>(
+  array: T[],
+  callbackfn: (value: T, index: number, array: T[]) => U[]
+): U[] {
+  return Array.prototype.concat(...array.map(callbackfn));
 }

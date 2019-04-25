@@ -7,7 +7,12 @@ export type Constructor<T = any> = new (...args: any[]) => T;
 /**
  * Helpers for handling the generated types
  */
-export type GenTypesShapeKeys = "models" | "repositories" | "selects";
+export type GenTypesShapeKeys =
+  | "models"
+  | "repositories"
+  | "selects"
+  | "customEntities"
+  | "baseEntities";
 
 export type GenTypesShape = Record<GenTypesShapeKeys, any>;
 

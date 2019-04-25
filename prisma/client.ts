@@ -10,7 +10,7 @@ const postsData = [
   { id: "5", title: "title_5", body: "body_5", user_id: "3" }
 ];
 
-const usersData = [
+const usersData: User[] = [
   { id: "1", firstName: "firstName_1", lastName: "lastName_1" },
   { id: "2", firstName: "firstName_2", lastName: "lastName_2" },
   { id: "3", firstName: "firstName_3", lastName: "lastName_3" }
@@ -69,7 +69,7 @@ export const client: PrismaClient = {
 
     if (opts.select && opts.select.posts) {
       result = result.map(r => {
-        r["posts"] = postsData.find(p => p.user_id === r.id);
+        r.posts = postsData.filter(p => p.user_id === r.id);
 
         return r;
       });
@@ -81,7 +81,7 @@ export const client: PrismaClient = {
     await stall(2000);
 
     if (opts.where) {
-      return postsData.filter(p => p.user_id === opts.where.user.id);
+      return postsData.filter(p => p.user_id === opts.where!.user.id);
     }
 
     return postsData;

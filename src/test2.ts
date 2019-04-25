@@ -1,10 +1,9 @@
-import { client, PrismaClient } from "../../prisma/client";
-import { EntityManager } from "../../lib";
-import { User as UserEntity } from "./entities";
+import { client, PrismaClient } from "../prisma/client";
+import { EntityManager } from "../lib";
 import { makeSchema, queryType, objectType } from "nexus";
 import { join } from "path";
 import { ApolloServer } from "apollo-server";
-import { baseEntities } from "./generated";
+import { entities } from "./generated";
 
 export interface Context {
   manager: EntityManager<PrismaClient>;
@@ -13,8 +12,11 @@ export interface Context {
 async function main() {
   const em = new EntityManager({
     client,
-    baseEntities,
-    customEntities: [UserEntity]
+    entities,
+    typegen: {
+      clientPath: "",
+      entitiesPath: []
+    }
   });
 
   const Query = queryType({
@@ -64,7 +66,7 @@ async function main() {
           alias: "ctx"
         },
         {
-          source: join(__dirname, "./entities/User.ts"),
+          source: join(__dirname, "./entities/User.entity.ts"),
           alias: "entities"
         }
       ],
@@ -85,5 +87,3 @@ async function main() {
     )
   );
 }
-
-main();
