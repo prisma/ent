@@ -11,7 +11,7 @@ interface SimpleCacheEntry {
 
 export class SimpleCache implements ICache<SimpleWriteInput> {
   constructor(
-    protected ttl: number = 3600 * 1000,
+    protected ttl: number = 1000,
     protected cache: Record<string, SimpleCacheEntry> = {}
   ) {}
 

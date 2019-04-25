@@ -293,7 +293,6 @@ function findCustomEntities(globs: string[]) {
     const keys = Object.keys(mod).filter(
       key => mod[key].modelName !== undefined
     );
-    console.log(entityPath);
 
     keys.forEach(key => {
       acc[key] = { className: key, path: entityPath, entityClass: mod[key] };

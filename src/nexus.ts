@@ -3,25 +3,25 @@
  * Do not make changes to this file directly
  */
 
-import * as ctx from "./test2";
-import * as entities from "./entities/User.entity";
+import * as baseEntities from "./generated"
+import * as ctx from "./test2"
+import * as userEntity from "./entities/User.entity"
+
 
 declare global {
   interface NexusGen extends NexusGenTypes {}
 }
 
-export interface NexusGenInputs {}
+export interface NexusGenInputs {
+}
 
-export interface NexusGenEnums {}
+export interface NexusGenEnums {
+}
 
 export interface NexusGenRootTypes {
-  Post: {
-    // root type
-    body: string; // String!
-    title: string; // String!
-  };
+  Post: baseEntities.Post;
   Query: {};
-  User: entities.User;
+  User: userEntity.User;
   String: string;
   Int: number;
   Float: number;
@@ -29,31 +29,31 @@ export interface NexusGenRootTypes {
   ID: string;
 }
 
-export interface NexusGenAllTypes extends NexusGenRootTypes {}
+export interface NexusGenAllTypes extends NexusGenRootTypes {
+}
 
 export interface NexusGenFieldTypes {
-  Post: {
-    // field return type
+  Post: { // field return type
     body: string; // String!
     title: string; // String!
-  };
-  Query: {
-    // field return type
-    user: NexusGenRootTypes["User"]; // User!
-  };
-  User: {
-    // field return type
+  }
+  Query: { // field return type
+    user: NexusGenRootTypes['User']; // User!
+  }
+  User: { // field return type
     firstName: string; // String!
     fullName: string; // String!
     id: string; // ID!
     lastName: string; // String!
-    posts: NexusGenRootTypes["Post"][]; // [Post!]!
-  };
+    posts: NexusGenRootTypes['Post'][]; // [Post!]!
+  }
 }
 
-export interface NexusGenArgTypes {}
+export interface NexusGenArgTypes {
+}
 
-export interface NexusGenAbstractResolveReturnTypes {}
+export interface NexusGenAbstractResolveReturnTypes {
+}
 
 export interface NexusGenInheritedFields {}
 
@@ -83,19 +83,9 @@ export interface NexusGenTypes {
   interfaceNames: NexusGenInterfaceNames;
   scalarNames: NexusGenScalarNames;
   unionNames: NexusGenUnionNames;
-  allInputTypes:
-    | NexusGenTypes["inputNames"]
-    | NexusGenTypes["enumNames"]
-    | NexusGenTypes["scalarNames"];
-  allOutputTypes:
-    | NexusGenTypes["objectNames"]
-    | NexusGenTypes["enumNames"]
-    | NexusGenTypes["unionNames"]
-    | NexusGenTypes["interfaceNames"]
-    | NexusGenTypes["scalarNames"];
-  allNamedTypes:
-    | NexusGenTypes["allInputTypes"]
-    | NexusGenTypes["allOutputTypes"];
-  abstractTypes: NexusGenTypes["interfaceNames"] | NexusGenTypes["unionNames"];
+  allInputTypes: NexusGenTypes['inputNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['scalarNames'];
+  allOutputTypes: NexusGenTypes['objectNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['unionNames'] | NexusGenTypes['interfaceNames'] | NexusGenTypes['scalarNames'];
+  allNamedTypes: NexusGenTypes['allInputTypes'] | NexusGenTypes['allOutputTypes']
+  abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames'];
   abstractResolveReturn: NexusGenAbstractResolveReturnTypes;
 }
