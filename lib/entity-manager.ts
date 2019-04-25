@@ -36,7 +36,6 @@ export class EntityManager<Client extends any = any> {
       | false
       | {
           entitiesPath: string[];
-          clientPath: string;
         };
     cache?: ICache;
   }) {
@@ -51,7 +50,7 @@ export class EntityManager<Client extends any = any> {
       codegen(
         typesMetadata,
         input.typegen.entitiesPath,
-        input.typegen.clientPath
+        input.client.getFilePath()
       );
       console.timeEnd("Generating types...");
     }

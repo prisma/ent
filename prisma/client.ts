@@ -43,6 +43,7 @@ export type PrismaClient = {
   }): Promise<User[]>;
   posts(opts: { where?: WhereInput }): Promise<Post[]>;
   getDatamodel(): ISDL;
+  getFilePath(): string;
 };
 
 export const client: PrismaClient = {
@@ -94,6 +95,9 @@ export const client: PrismaClient = {
      */
     return findDatamodelAndComputeSchema(prisma.configPath, prisma.config)
       .datamodel;
+  },
+  getFilePath() {
+    return __filename;
   }
 };
 

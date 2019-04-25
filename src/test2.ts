@@ -14,7 +14,6 @@ const em = new EntityManager({
   entities,
   cache: new SimpleCache(5 * 1000),
   typegen: {
-    clientPath: join(__dirname, "../prisma/client.ts"),
     entitiesPath: [join(__dirname, "./entities/*.entity.ts")]
   }
 });

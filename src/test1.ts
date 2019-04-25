@@ -48,7 +48,6 @@ async function main() {
     client,
     entities,
     typegen: {
-      clientPath: join(__dirname, "../prisma/client.ts"),
       entitiesPath: [join(__dirname, "entities/*.entity.ts")]
     }
   });
