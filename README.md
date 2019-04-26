@@ -200,7 +200,7 @@ const em = new EntityManager({
   client: prisma,
   entities,
   typegen: {
-    customEntitiesPath: [ // Register the custom entities so they're imported/used in the code-generation
+    customEntitiesPath: [ // Register the custom entities so they get imported/used in the code-generation
       path.join(__dirname, './entities/*.ts')
     ]
   }
