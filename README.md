@@ -14,6 +14,17 @@ While you can certainly already build your own entity layer with the `prisma-cli
 
 
 
+## Benefits
+
+
+
+- Consistent & predictable data across your application
+- Structure to horizontally scale your project
+- Reusability
+- ...
+
+
+
 ## Entities ?
 
 Entities are domain models which you can use across your application to do business logic using consistent and predictable "data objects".
@@ -213,4 +224,3 @@ This is very early and WIP. Feel free to check out the source code and see how i
 The [prisma-client V2](https://github.com/prisma/rfcs/blob/new-ts-client-rfc/text/0000-new-ts-client.md) first need to be released in order for this to work.
 
 Any feedback for design decisions though issues are well appreciated. Keep in mind though that a lot might change in the coming weeks.
-
