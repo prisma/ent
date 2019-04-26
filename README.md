@@ -76,7 +76,7 @@ export class User extends BaseEntity<"User"> {
   id: string;
   firstName: string;
   lastName: string;
-  posts: () => Promise<ExtendedPost[]>;
+  posts: () => Promise<Post[]>;
 
   constructor(protected input: UserInput) {
     super(input);
